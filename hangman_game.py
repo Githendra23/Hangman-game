@@ -1,7 +1,7 @@
 from tkinter import *
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-from PIL import Image, ImageTk
+from PIL import Image
 import random, os
 
 class App(ctk.CTk):
@@ -41,11 +41,10 @@ class App(ctk.CTk):
         self.health = ctk.CTkLabel(self, image=image, text="")
         self.health.grid(row = 3, column = 0, padx=(5, 10), pady=10)
         
-        """ self.iconphoto(False, f'./logo.ico') """
+        # self.iconphoto(False, f'{self.dir_path}\\logo.ico')
         
         self.randomWord()
         self.display()
-        print(self.chosenWord)
         
     def main(self):
         if self.button.cget("text") == 'Reset':
@@ -59,7 +58,7 @@ class App(ctk.CTk):
                 if userAnswer.isalpha():
                     self.logic(userAnswer)
                 else:
-                    raise Exception("Type a word or letter")
+                    raise Exception
             except Exception:
                 CTkMessagebox(message = "Type letters or a word",
                             icon = "warning", option_1 = "Ok")
@@ -92,14 +91,22 @@ class App(ctk.CTk):
                 print('letter not found')
                 self.usersGuesses += userAnswer
                 self.chances -= 1
+            
+            if sum([1 for i in range(len(self.chosenWord)) if self.guessedLetters[i] == self.chosenWord[i]]) == len(self.chosenWord):
+                self.display()
+                self.checkWin(True)
         
         self.healthBar(self.chances)
         if self.chances == 0:
             self.checkWin(False)
     
     def checkWin(self, isWin):
+        displayText = ""
+        
         if isWin is False:
             print('You lost')
+            displayText += ''.join([letter + ' ' for letter in self.chosenWord])
+            self.labelGuessWord.configure(text = displayText)
             self.score = 0
         else:
             print('you guessed the word correctly')
