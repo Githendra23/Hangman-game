@@ -5,6 +5,39 @@ from PIL import Image
 from datetime import datetime
 import random, os
 
+class Menu(ctk.CTk):
+    difficulty = ""
+    
+    def __init__(self):
+        super().__init__()
+
+        ctk.set_appearance_mode("Dark")
+        ctk.set_default_color_theme("green")
+        
+        self.title("Menu Hangman")
+        self.geometry("300x300")
+        
+        self.easyButton = ctk.CTkButton(self, text ="Easy", command = self.easy)
+        self.easyButton.grid(row = 0, column = 2, padx=(80, 10), pady=(80, 10))
+        
+        self.mediumButton = ctk.CTkButton(self, text ="Medium", command = self.medium)
+        self.mediumButton.grid(row = 1, column = 2, padx=(80, 10), pady=10)
+        
+        self.hardButton = ctk.CTkButton(self, text ="Hard", command = self.hard)
+        self.hardButton.grid(row = 2, column = 2, padx=(80, 10), pady=10)
+    
+    def easy(self):
+        self.difficulty = 'easy'
+        self.destroy()
+
+    def medium(self):
+        self.difficulty = 'medium'
+        self.destroy()
+
+    def hard(self):
+        self.difficulty = 'hard'
+        self.destroy()
+
 class App(ctk.CTk):
     chances = 7
     chosenWord = ""
@@ -12,12 +45,12 @@ class App(ctk.CTk):
     usersGuesses = ""
     score = 0
     
-    def __init__(self):
+    def __init__(self, difficulty):
         super().__init__()
 
         ctk.set_appearance_mode("Dark")
         ctk.set_default_color_theme("green")
-
+        print(difficulty)
         self.title("hangman")
         self.geometry("280x500")
         
@@ -41,6 +74,9 @@ class App(ctk.CTk):
                              size=(228 - 57 - 57, 18))
         self.health = ctk.CTkLabel(self, image=image, text="")
         self.health.grid(row = 3, column = 1, padx=(5, 10), pady=10)
+        
+        self.quitButton = ctk.CTkButton(self, text='Close', command = self.destroy)
+        self.quitButton.grid(row = 4, column = 1, padx=(5, 10), pady=10)
         
         # self.iconphoto(False, f'{self.dir_path}\\logo.ico')
         
@@ -178,12 +214,12 @@ class App(ctk.CTk):
             
             file.write(f"{score}\n{currentDateTime}")
             file.close()
-        except:
-            print('Error setBestScore')
+        except IOError as e:
+            print(e)
     
     def getFormatedText(self, format):
         text = ""
-        
+
         try:
             file = open(f"{self.dir_path}\\score_card.txt", 'r')
             with file as fp:
@@ -191,15 +227,20 @@ class App(ctk.CTk):
             
             match format:
                 case 'best_score':
-                    return text[0].replace('\n', '')
+                    return int(text[0].replace('\n', ''))
                 case 'date':
                     return text[1][0:10]
                 case 'time':
                     return text[1][11:19]
-    
-        except:
-            print('Error get text')
+
+        except IOError as e:
+            print(e)
 
 if __name__ == '__main__':
-    app = App()
+    menu = Menu()
+    menu.mainloop()
+    
+    difficulty = menu.difficulty
+    
+    app = App(difficulty)
     app.mainloop()
