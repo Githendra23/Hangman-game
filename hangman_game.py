@@ -13,7 +13,7 @@ class App(ctk.CTk):
     
     def __init__(self):
         super().__init__()
-        
+
         ctk.set_appearance_mode("Dark")
         ctk.set_default_color_theme("green")
 
@@ -107,6 +107,10 @@ class App(ctk.CTk):
             print('You lost')
             displayText += ''.join([letter + ' ' for letter in self.chosenWord])
             self.labelGuessWord.configure(text = displayText)
+            
+            if self.score > self.getBestScore():
+                set
+            
             self.score = 0
         else:
             print('you guessed the word correctly')
@@ -162,8 +166,20 @@ class App(ctk.CTk):
         image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\{chances}_health_bar.png"),
                         size=(228 - 57 - 57, 18))
         self.health.configure(image=image)
-                   
-      
+        
+    def setBestScore(self, score):
+        try:
+            file = open(f"{self.dir_path}\\score_card.txt", 'r')
+        except:
+            print()
+    
+    def getBestScore(self):
+        try:
+            file = open(f"{self.dir_path}\\score_card.txt", 'r')
+            return file.readline()
+        except:
+            print()
+
 if __name__ == '__main__':
     app = App()
     app.mainloop()
