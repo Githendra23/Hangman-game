@@ -44,13 +44,14 @@ class App(ctk.CTk):
     guessedLetters = []
     usersGuesses = ""
     score = 0
+    difficulty = ""
     
     def __init__(self, difficulty):
         super().__init__()
 
         ctk.set_appearance_mode("Dark")
         ctk.set_default_color_theme("green")
-        print(difficulty)
+
         self.title("hangman")
         self.geometry("280x500")
         
@@ -79,6 +80,7 @@ class App(ctk.CTk):
         self.quitButton.grid(row = 4, column = 1, padx=(5, 10), pady=10)
         
         # self.iconphoto(False, f'{self.dir_path}\\logo.ico')
+        self.difficulty = difficulty
         
         self.randomWord()
         self.display()
@@ -168,11 +170,11 @@ class App(ctk.CTk):
         numberOfWords = 0
         
         try:
-            file = open(f"{self.dir_path}\\word_list.txt", 'r')
+            file = open(f"{self.dir_path}\\difficulty\\word_list\\{self.difficulty}_word_list.txt", 'r')
             with file as fp:
                 numberOfWords = len(fp.readlines())
             
-            file = open(f"{self.dir_path}\\word_list.txt", 'r')    
+            file = open(f"{self.dir_path}\\difficulty\\word_list\\{self.difficulty}_word_list.txt", 'r')    
             lines = file.readlines()
             
             file.close()
@@ -210,7 +212,7 @@ class App(ctk.CTk):
         currentDateTime = f"{currentDateTime[8:10]}-{currentDateTime[5:7]}-{currentDateTime[0:4]} {currentDateTime[11:13]}:{currentDateTime[14:16]}:{currentDateTime[17:19]}"
         
         try:
-            file = open(f"{self.dir_path}\\score_card.txt", 'w')
+            file = open(f"{self.dir_path}\\difficulty\\score\\{self.difficulty}_score_card.txt", 'w')
             
             file.write(f"{score}\n{currentDateTime}")
             file.close()
@@ -221,7 +223,7 @@ class App(ctk.CTk):
         text = ""
 
         try:
-            file = open(f"{self.dir_path}\\score_card.txt", 'r')
+            file = open(f"{self.dir_path}\\difficulty\\score\\{self.difficulty}_score_card.txt", 'r')
             with file as fp:
                 text = (fp.readlines())
             
