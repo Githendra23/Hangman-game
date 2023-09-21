@@ -1,7 +1,7 @@
 from tkinter import *
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
-from PIL import Image
+from PIL import Image, ImageTk
 import random, os
 
 class App(ctk.CTk):
@@ -18,7 +18,7 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("green")
 
         self.title("hangman")
-        self.geometry("300x500")
+        self.geometry("350x500")
         
         self.labelScore = ctk.CTkLabel(self, text=f"SCORE {self.score}")
         self.labelScore.grid(row = 0, column = 1, padx=(5, 10), pady=10)
@@ -36,13 +36,12 @@ class App(ctk.CTk):
         self.labelGuessWord.grid(row = 2, column = 1, padx=(5, 10), pady=10)
         
         self.dir_path = os.path.dirname(os.path.realpath(__file__))
-        """ image = ctk.CTkImage(light_image=Image.open(f'{self.dir_path}\\health_bar\\full_health_bar.jpg'),
-                                  dark_image=Image.open(f'{self.dir_path}\\health_bar\\full_health_bar.jpg'),
-                                  size=(30, 30))
-        self.health = ctk.CTkLabel(self, image=image)
-        self.health.grid(row = 3, column = 0) """
+        image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\7_health_bar.png"),
+                             size=(228 - 57 - 57, 18))
+        self.health = ctk.CTkLabel(self, image=image, text="")
+        self.health.grid(row = 3, column = 0, padx=(5, 10), pady=10)
         
-        """ self.iconphoto(False, f'logo') """
+        """ self.iconphoto(False, f'./logo.ico') """
         
         self.randomWord()
         self.display()
@@ -94,6 +93,7 @@ class App(ctk.CTk):
                 self.usersGuesses += userAnswer
                 self.chances -= 1
         
+        self.healthBar(self.chances)
         if self.chances == 0:
             self.checkWin(False)
     
@@ -141,12 +141,21 @@ class App(ctk.CTk):
                           icon = "cancel", option_1 = "Ok")
 
     def resetGame(self):
+        if self.chances == 0:
+            self.chances = 7
+            
         self.usersGuesses = ""
         self.guessedLetters.clear()        
         self.randomWord()
         self.display()
+        self.healthBar(self.chances)
         self.button.configure(text = 'Enter')
-        
+     
+    def healthBar(self, chances):
+        image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\{chances}_health_bar.png"),
+                        size=(228 - 57 - 57, 18))
+        self.health.configure(image=image)
+                   
       
 if __name__ == '__main__':
     app = App()
