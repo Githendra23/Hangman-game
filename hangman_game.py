@@ -2,6 +2,7 @@ from tkinter import *
 import customtkinter as ctk
 from CTkMessagebox import CTkMessagebox
 from PIL import Image
+from datetime import datetime
 import random, os
 
 class App(ctk.CTk):
@@ -18,7 +19,7 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("green")
 
         self.title("hangman")
-        self.geometry("350x500")
+        self.geometry("280x500")
         
         self.labelScore = ctk.CTkLabel(self, text=f"SCORE {self.score}")
         self.labelScore.grid(row = 0, column = 1, padx=(5, 10), pady=10)
@@ -39,7 +40,7 @@ class App(ctk.CTk):
         image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\7_health_bar.png"),
                              size=(228 - 57 - 57, 18))
         self.health = ctk.CTkLabel(self, image=image, text="")
-        self.health.grid(row = 3, column = 0, padx=(5, 10), pady=10)
+        self.health.grid(row = 3, column = 1, padx=(5, 10), pady=10)
         
         # self.iconphoto(False, f'{self.dir_path}\\logo.ico')
         
@@ -108,8 +109,8 @@ class App(ctk.CTk):
             displayText += ''.join([letter + ' ' for letter in self.chosenWord])
             self.labelGuessWord.configure(text = displayText)
             
-            if self.score > self.getBestScore():
-                set
+            if self.score > self.getFormatedText('best_score'):
+                self.setBestScore(self.score)
             
             self.score = 0
         else:
@@ -141,6 +142,7 @@ class App(ctk.CTk):
             file.close()
         
             self.chosenWord = lines[random.randint(0, numberOfWords)].replace('\n', '')
+            print(self.chosenWord)
             
             for letter in self.chosenWord:
                 if letter.isalpha():
@@ -168,17 +170,35 @@ class App(ctk.CTk):
         self.health.configure(image=image)
         
     def setBestScore(self, score):
+        currentDateTime = str(datetime.now())
+        currentDateTime = f"{currentDateTime[8:10]}-{currentDateTime[5:7]}-{currentDateTime[0:4]} {currentDateTime[11:13]}:{currentDateTime[14:16]}:{currentDateTime[17:19]}"
+        
         try:
-            file = open(f"{self.dir_path}\\score_card.txt", 'r')
+            file = open(f"{self.dir_path}\\score_card.txt", 'w')
+            
+            file.write(f"{score}\n{currentDateTime}")
+            file.close()
         except:
-            print()
+            print('Error setBestScore')
     
-    def getBestScore(self):
+    def getFormatedText(self, format):
+        text = ""
+        
         try:
             file = open(f"{self.dir_path}\\score_card.txt", 'r')
-            return file.readline()
+            with file as fp:
+                text = (fp.readlines())
+            
+            match format:
+                case 'best_score':
+                    return text[0].replace('\n', '')
+                case 'date':
+                    return text[1][0:10]
+                case 'time':
+                    return text[1][11:19]
+    
         except:
-            print()
+            print('Error get text')
 
 if __name__ == '__main__':
     app = App()
