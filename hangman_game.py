@@ -25,6 +25,9 @@ class Menu(ctk.CTk):
         
         self.hardButton = ctk.CTkButton(self, text ="Hard", command = self.hard)
         self.hardButton.grid(row = 2, column = 2, padx=(80, 10), pady=10)
+        
+        self.dir_path = os.path.dirname(os.path.realpath(__file__))
+        self.after(201, lambda: self.iconbitmap(f'{self.dir_path}\\logo.ico'))
     
     def easy(self):
         self.difficulty = 'easy'
@@ -71,17 +74,17 @@ class App(ctk.CTk):
         self.labelGuessWord.grid(row = 2, column = 1, padx=(5, 10), pady=10)
         
         self.dir_path = os.path.dirname(os.path.realpath(__file__))
-        image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\7_health_bar.png"),
+        image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\{self.chances}_health_bar.png"),
                              size=(228 - 57 - 57, 18))
         self.health = ctk.CTkLabel(self, image=image, text="")
         self.health.grid(row = 3, column = 1, padx=(5, 10), pady=10)
         
-        self.quitButton = ctk.CTkButton(self, text='Close', command = self.destroy)
+        self.quitButton = ctk.CTkButton(self, text='Close', command = self.closeApp)
         self.quitButton.grid(row = 4, column = 1, padx=(5, 10), pady=10)
         
-        # self.iconphoto(False, f'{self.dir_path}\\logo.ico')
+        self.after(201, lambda: self.iconbitmap(f'{self.dir_path}\\logo.ico'))
         self.difficulty = difficulty
-        
+
         self.randomWord()
         self.display()
         
@@ -238,6 +241,10 @@ class App(ctk.CTk):
         except IOError as e:
             print(e)
 
+    def closeApp(self):
+        self.checkWin(False)
+        self.destroy()
+    
 if __name__ == '__main__':
     menu = Menu()
     menu.mainloop()
