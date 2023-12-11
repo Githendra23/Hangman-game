@@ -56,31 +56,37 @@ class App(ctk.CTk):
         ctk.set_default_color_theme("green")
 
         self.title("hangman")
-        self.geometry("280x500")
+        self.geometry("280x400")
         
         self.labelScore = ctk.CTkLabel(self, text=f"SCORE {self.score}")
-        self.labelScore.grid(row = 0, column = 1, padx=(5, 10), pady=10)
-
         self.label = ctk.CTkLabel(self, text="Answer: ")
-        self.label.grid(row = 1, column = 0, padx=(5, 10), pady=10)
-
         self.EntryAnswer = ctk.CTkEntry(self)
-        self.EntryAnswer.grid(row = 1, column = 1, padx=(5, 10), pady=10)
-
         self.button = ctk.CTkButton(self, text ="Enter", width = 50, command = self.main)
-        self.button.grid(row = 1, column = 2, padx=(5, 10), pady=10)
-        
         self.labelGuessWord = ctk.CTkLabel(self, text="WORD GOING TO BE HERE")
-        self.labelGuessWord.grid(row = 2, column = 1, padx=(5, 10), pady=10)
         
         self.dir_path = os.path.dirname(os.path.realpath(__file__))
+        image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\hangman\\{self.chances}_hangman.png"),
+                        size=(104, 104))
+        self.hangMan = ctk.CTkLabel(self, image=image, text="")
+        
         image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\{self.chances}_health_bar.png"),
-                             size=(228 - 57 - 57, 18))
+                             size=(114, 18))
         self.health = ctk.CTkLabel(self, image=image, text="")
+        
+        self.quitButton = ctk.CTkButton(self, text='Close', width = 60, command = self.closeApp)
+        
+        
+        # positions
+        self.labelScore.grid(row = 0, column = 1, padx=(5, 10), pady=10)
+        self.labelGuessWord.grid(row = 1, column = 1, padx=(5, 10), pady=10)
+        self.hangMan.grid(row = 2, column = 1, padx=(5, 10), pady=(5, 50))
         self.health.grid(row = 3, column = 1, padx=(5, 10), pady=10)
         
-        self.quitButton = ctk.CTkButton(self, text='Close', command = self.closeApp)
-        self.quitButton.grid(row = 4, column = 1, padx=(5, 10), pady=10)
+        self.label.grid(row = 4, column = 0, padx=(5, 10), pady=10)
+        self.EntryAnswer.grid(row = 4, column = 1, padx=(5, 10), pady=10)
+        self.button.grid(row = 4, column = 2, padx=(5, 10), pady=10)
+        
+        self.quitButton.grid(row = 5, column = 1, padx=(5, 10), pady=10)
         
         self.after(201, lambda: self.iconbitmap(f'{self.dir_path}\\logo.ico'))
         self.difficulty = difficulty
@@ -138,7 +144,7 @@ class App(ctk.CTk):
                 self.display()
                 self.checkWin(True)
         
-        self.healthBar(self.chances)
+        self.healthBar_Hangman(self.chances)
         if self.chances == 0:
             self.checkWin(False)
     
@@ -202,13 +208,17 @@ class App(ctk.CTk):
         self.guessedLetters.clear()        
         self.randomWord()
         self.display()
-        self.healthBar(self.chances)
+        self.healthBar_Hangman(self.chances)
         self.button.configure(text = 'Enter')
      
-    def healthBar(self, chances):
+    def healthBar_Hangman(self, chances):
         image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\health_bar\\{chances}_health_bar.png"),
                         size=(228 - 57 - 57, 18))
         self.health.configure(image=image)
+        
+        image = ctk.CTkImage(dark_image=Image.open(f"{self.dir_path}\\hangman\\{chances}_hangman.png"),
+                        size=(104, 104))
+        self.hangMan.configure(image=image)
         
     def setBestScore(self, score):
         currentDateTime = str(datetime.now())
